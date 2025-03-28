@@ -10,7 +10,7 @@ def get_contacts():
     return jsonify({"contacts": json_contacts})
 
 # Route to add a new contact in our application
-@app.route("/add_contact", methods=["POST"])
+@app.route("/create_contact", methods=["POST"])
 def create_contact():
     # Breaking down the request object into required attributes
     first_name = request.json.get("firstName")
@@ -32,6 +32,36 @@ def create_contact():
     
     return jsonify({"message": "Contact created successfully"}), 201   # Status code 201 (Created) is more specific
 
+# Route to update existing contact, identified by user ID
+@app.route("/update_contact/<int:user_id>", methods=["PATCH"])
+def update_contact(user_id):
+    # Lookout for db record using user_id
+    contact = Contact.query.get(user_id)
+
+    if not contact:
+        return jsonify({"message": "Contact Not Found!!!"}), 404   # Status code, 404 not found
+    
+    data = request.json
+    contact.first_name = data.get("firstName", contact.first_name)
+    contact.last_name = data.get("lastName", contact.last_name)
+    contact.email = data.get("email", contact.email)
+
+    db.session.commit()
+
+    return jsonify({"message": "User Updated Successfully!!!"}), 200
+
+# Route for deleting contact based on ID
+@app.route("/delete_contact/<int:user_id>", methods=["DELETE"])
+def delete_contact(user_id):
+    contact = Contact.query.get(user_id)
+
+    if not contact:
+        return jsonify({"messgae": "Contact Not Found"}), 404
+
+    db.session.delete(contact)
+    db.session.commit()
+
+    return jsonify({"message": "Contact Deleted Successfully!!!"}), 200
 
 if __name__ == "__main__":
     with app.app_context():
