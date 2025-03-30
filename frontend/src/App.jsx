@@ -4,7 +4,8 @@ import './App.css'
 import ContactForm from './ContactForm'
 
 function App() {
-  const [contacts, setContacts] = useState([])
+  const [contacts, setContacts] = useState([]);
+  const [isModelOpen, setIsModelOpen] = useState([])
 
   useEffect(() => {
     fetchContacts()
