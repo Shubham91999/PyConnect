@@ -5,12 +5,13 @@ import ContactForm from './ContactForm'
 
 function App() {
   const [contacts, setContacts] = useState([]);
-  const [isModelOpen, setIsModelOpen] = useState([false])
+  const [isModelOpen, setIsModelOpen] = useState(false)
+  const [currentContact, setCurrentContact] = useState({})
 
   useEffect(() => {
     fetchContacts()
   }, []
-  )
+  );
 
   const fetchContacts = async () => {
     {/* Getting response object by fetch method calling our contacts API */}
@@ -21,21 +22,34 @@ function App() {
 
   const closeModel = () => {
     setIsModelOpen(false)
+    setCurrentContact({})
   }
 
   const openCreateModel = () => {
     if (!isModelOpen) setIsModelOpen(true)
   }
 
+  const openEditModel = (contact) => {
+    if (isModelOpen) return
+    setCurrentContact(contact)
+    setIsModelOpen(true)
+  }
 
-  return (<>
-    <ContactList contacts={contacts}/>
+  const onUpdate = () =>{
+    closeModel()
+    fetchContacts()
+  }
+
+
+  return (
+  <>
+    <ContactList contacts={contacts} updateContact={openEditModel} updateCallback={onUpdate}/>
           <button onClick={openCreateModel}>Create New Contact</button>
           {
             isModelOpen && <div className="modal">
               <div className="modal-content">
                 <span className="close" onClick={closeModel}>&times;</span>
-                  <ContactForm />
+                  <ContactForm existingContact={currentContact} updateCallback={onUpdate}/>
               </div>
             </div>
           }
