@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-const ContactForm = () => {
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [email, setEmail] = useState("")
+const ContactForm = ({existingContact=  {}, updateCallback}) => {
+    const [firstName, setFirstName] = useState(existingContact.firstName || "")
+    const [lastName, setLastName] = useState(existingContact.lastName || "")
+    const [email, setEmail] = useState(existingContact.email || "")
 
     const onSubmit = async (e) => {
         e.preventDefault()
